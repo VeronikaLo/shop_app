@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import 'product.dart';
 
 class Products with ChangeNotifier {
 
@@ -38,9 +38,12 @@ final List<Product> _items = [
     ),
 ];
 
+
+
 List<Product> get items{
   return [..._items];
 }
+
 
 // method to find product by id
 Product findById(String id){
