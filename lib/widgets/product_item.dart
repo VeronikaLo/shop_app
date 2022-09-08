@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/product.dart';
+import '../provider/cart.dart';
 
 
 
@@ -12,7 +13,8 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context,);
+    final cart = Provider.of<Cart>(context, listen: false);  
 
     return GridTile(
       footer: ClipRRect(
@@ -24,10 +26,13 @@ class ProductItem extends StatelessWidget {
             icon:  Icon( 
               product.isFavorite? Icons.favorite : Icons.favorite_border,
               color: product.isFavorite? Theme.of(context).primaryColor: Colors.white),
-            onPressed: (){product.toogleFavoriteStatus();},),
+            onPressed: (){
+              product.toogleFavoriteStatus();},),
           trailing:IconButton(
             icon: const Icon(Icons.shopping_cart),
-            onPressed: (){},),
+            onPressed: (){
+              cart.addItem(product.id, product.title, product.price);
+            },),
         ),
       ),
       child: GestureDetector(

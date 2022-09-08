@@ -44,6 +44,10 @@ List<Product> get items{
   return [..._items];
 }
 
+List<Product> get favoritesItems{
+  return _items.where((prodItem) => prodItem.isFavorite).toList();
+}
+
 
 // method to find product by id
 Product findById(String id){

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_ap/screens/prod_detail_screen.dart';
 import 'package:shop_ap/screens/prod_overview_screen.dart';
 import './provider/products_provider.dart';
+import './provider/cart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create:(context) => Products(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider( // provider with data for thr products
+          create:(context) => Products()),
+        ChangeNotifierProvider( // provider for the cart
+          create: (context) => Cart())  
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -22,7 +28,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink ,
           fontFamily: 'Lato',
         ),
-        home:  ProductOverviewScreen(),
+        home:  const ProductOverviewScreen(),
         routes: {
           '/prod_detail':(context) => const ProductDetailScreen(),
         },
