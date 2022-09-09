@@ -38,6 +38,8 @@ class Cart with ChangeNotifier{
   }
 
 
+  
+  // add Item
   void addItem(String productId, String title, double price){
 
     //firstly check, if we alredy have the Item in a cart
@@ -64,6 +66,12 @@ class Cart with ChangeNotifier{
           quantity: 1, 
           price: price),);
     }
+    notifyListeners();
+  }
+
+  //remove Item
+  void removeItem(String productId){
+    _items.remove(productId);
     notifyListeners();
   }
 
