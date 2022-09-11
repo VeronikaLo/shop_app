@@ -18,7 +18,7 @@ class UserProductsScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: (){}, 
+            onPressed: (){Navigator.of(context).pushNamed('/edit_screen');}, 
             icon: const Icon(Icons.add))
         ]),
       drawer: const DrawerApp(),  

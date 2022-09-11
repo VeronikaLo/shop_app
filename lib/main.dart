@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_ap/provider/orders.dart';
 import 'package:shop_ap/screens/cart_screen.dart';
+import 'package:shop_ap/screens/edit_prod_screen.dart';
 import 'package:shop_ap/screens/orders_screen.dart';
 import 'package:shop_ap/screens/prod_detail_screen.dart';
 import 'package:shop_ap/screens/prod_overview_screen.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
           '/cart_screen':(context) => const CartScreen(),
           '/orders_screen':(context) => const OrdersScreen(),
           '/user_products_screen':(context) => const UserProductsScreen(),
+          '/edit_screen':(context) => const EditProductScreen(),
         },
       ),
     );
