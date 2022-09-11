@@ -75,6 +75,23 @@ class Cart with ChangeNotifier{
     notifyListeners();
   }
 
+  //remove Single Item( =undo) in ScaffoldMessanger
+  void undo(String productId){
+    if(!_items.containsKey(productId)){
+      return;
+    }
+    if(_items[productId]!.quantity > 1){ //quantity > 1
+      _items.update(productId, (existingCartItem) => CartItem(
+        id: existingCartItem.id, 
+        title: existingCartItem.title, 
+        quantity: existingCartItem.quantity -1 , 
+        price: existingCartItem.price));
+    }else { // quantity==1
+      _items.remove(productId);
+    }
+    notifyListeners(); 
+  }
+
   //clear cart after placing order
   void clear(){
     _items = {};
