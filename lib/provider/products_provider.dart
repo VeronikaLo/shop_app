@@ -53,4 +53,19 @@ List<Product> get favoritesItems{
 Product findById(String id){
   return _items.firstWhere((prod)=> prod.id == id);
 }
+
+// add a new product
+void addProduct(Product product){
+  final newProduct = Product(
+    id: DateTime.now().toString(), 
+    title: product.title, 
+    description: product.description, 
+    price: product.price, 
+    imageUrl: product.imageUrl);
+
+  _items.add(newProduct);
+  // _items.insert(0, newProduct)  if we want to put the item at start of the list
+  notifyListeners();
+}
+
 }

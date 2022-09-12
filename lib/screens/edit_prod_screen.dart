@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbols.dart';
+import 'package:provider/provider.dart';
 
 import '../provider/product.dart';
+import '../provider/products_provider.dart';
 
 class EditProductScreen extends StatefulWidget {
   const EditProductScreen({super.key});
@@ -49,9 +51,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
             
         if(
           (!_imageUrlController.text.startsWith('http')&& !_imageUrlController.text.startsWith('https') ) ||
-                 (!_imageUrlController.text.endsWith('.png') && 
-                 !_imageUrlController.text.endsWith('.jpeg') && 
-                 !_imageUrlController.text.endsWith('.jpg'))) {
+                (!_imageUrlController.text.endsWith('.png') && 
+                !_imageUrlController.text.endsWith('.jpeg') && 
+                !_imageUrlController.text.endsWith('.jpg'))) {
           return ;
         }
 
@@ -61,10 +63,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void _saveForm(){
-    final isValid = _formKey.currentState?.validate();
-    if(!isValid!){
-      _formKey.currentState!.save();
+    final isValid = _formKey.currentState!.validate();
+    if(!isValid){
+      return;
     }
+
+    _formKey.currentState!.save();
+      Provider.of<Products>(context, listen: false).addProduct(_editedProd);
+      Navigator.of(context).pop();
   }
 
   @override
