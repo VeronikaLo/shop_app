@@ -46,12 +46,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void _updateUrl(){
       if(!_imageUrlFocusNode.hasFocus){
+            
+        if(
+          (!_imageUrlController.text.startsWith('http')&& !_imageUrlController.text.startsWith('https') ) ||
+                 (!_imageUrlController.text.endsWith('.png') && 
+                 !_imageUrlController.text.endsWith('.jpeg') && 
+                 !_imageUrlController.text.endsWith('.jpg'))) {
+          return ;
+        }
+
+
         setState(() {}); //empty setState, to ensure update of the latest data from TextFormField with user-url
       }
   }
 
   void _saveForm(){
-    _formKey.currentState!.save();
+    final isValid = _formKey.currentState?.validate();
+    if(!isValid!){
+      _formKey.currentState!.save();
+    }
   }
 
   @override
@@ -70,11 +83,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
         child: Form(
           key: _formKey,
           child: ListView(children: [
-          TextFormField(
+
+          TextFormField(    // title field
             decoration: const InputDecoration(labelText: 'Title',),
             textInputAction: TextInputAction.next,
             onFieldSubmitted: (_){
               FocusScope.of(context).requestFocus(_priceFocusNode);
+            },
+            validator: (value){
+              if(value!.isEmpty){
+                return 'Please provide the missing data';
+              }
+              return null;
             },
             onSaved: (value){
               _editedProd = Product(
@@ -86,13 +106,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
             },
           ),
 
-          TextFormField(
+          TextFormField(  // price field
             decoration: const InputDecoration(labelText: 'Price',),
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.number,
             focusNode: _priceFocusNode,
             onFieldSubmitted: (_){
               FocusScope.of(context).requestFocus(_descriptionFocusNode);
+            },
+            validator: (value){
+              if(value!.isEmpty){
+                return 'Please provide the missing data';
+              }
+              if(double.tryParse(value) == null){
+                return 'Please enter a valid number ';
+              }
+              if(double.parse(value) <= 0){
+                return 'Please enter the number greater than zero';
+              }
+              return null;
             },
             onSaved: (value){
               _editedProd = Product(
@@ -104,12 +136,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
             },
           ),
 
-          TextFormField(
+          TextFormField(  // description field
             decoration: const InputDecoration(labelText: 'Description',),
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.multiline,
             maxLines: 3,
             focusNode: _descriptionFocusNode,
+            validator: ((value) {
+              if(value!.isEmpty){
+                return 'Please enter a decrition of the product';
+              }
+              if(value.length < 15){
+                return 'Should be at least 15 characters long';
+              }
+              return null;
+            }),
             onSaved: (value){
               _editedProd = Product(
                 id: _editedProd.id, 
@@ -133,7 +174,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   color: Colors.grey,
                 ),  
               ),
-              child: _imageUrlController.text.isEmpty? const Text('Enter a URL', textAlign: TextAlign.center ,):
+              child: _imageUrlController.text.isEmpty? 
+              const Text('Enter a URL', textAlign: TextAlign.center ,):
                     FittedBox(
                       child: Image.network(
                         _imageUrlController.text, 
@@ -141,7 +183,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ),
 
             Expanded(
-              child: TextFormField(
+              child: TextFormField(  // imageUrl field
               decoration: const InputDecoration(labelText: 'Image URL',),
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.url,
@@ -149,6 +191,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
               focusNode: _imageUrlFocusNode,
               onEditingComplete: (){setState(() {});},
               onFieldSubmitted: (_){_saveForm();},
+              validator: ((value) {
+                if(value!.isEmpty){
+                  return 'Please enter an image URL';
+                }
+                if(!value.startsWith('http')&& !value.startsWith('https') ){
+                  return 'Please enter a valid URL'; 
+                }
+                if (!value.endsWith('.png') && !value.endsWith('.jpeg') && !value.endsWith('.jpg')){
+                  return 'Please enter a valid URL image';
+                }
+                return null;
+              }),
               onSaved: (value){
               _editedProd = Product(
                 id: _editedProd.id, 
