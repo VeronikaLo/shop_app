@@ -54,7 +54,7 @@ Product findById(String id){
   return _items.firstWhere((prod)=> prod.id == id);
 }
 
-// add a new product
+//  function add a new product
 void addProduct(Product product){
   final newProduct = Product(
     id: DateTime.now().toString(), 
@@ -68,7 +68,7 @@ void addProduct(Product product){
   notifyListeners();
 }
 
-//update a product (if editing)
+// function update a product (if editing)
   void updateProduct(String id, Product newProduct ){
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if(prodIndex >= 0){
@@ -77,6 +77,12 @@ void addProduct(Product product){
     }else{
       print('...');
     }
+  }
+
+  //function delete a product
+  void deleteProduct(String id){
+    _items.removeWhere((prod) => prod.id == id);
+    notifyListeners();
   }
 
 
