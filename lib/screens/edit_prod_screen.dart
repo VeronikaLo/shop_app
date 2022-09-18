@@ -116,6 +116,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     } else{
       try{
         await Provider.of<Products>(context, listen: false).addProduct(_editedProd);
+        
       }catch(error){
         await showDialog(
           context: context, 
@@ -153,7 +154,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         ], ),
       body: isLoading? const Center(
         child: CircularProgressIndicator(),
-      ) : Padding(
+      ) :  Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,

@@ -83,7 +83,7 @@ Future<void> addProduct(Product product) async{
   notifyListeners();
   } catch(error){
     debugPrint(error.toString());
-    rethrow;
+    rethrow ;
   }
 }
 
@@ -110,6 +110,7 @@ Future<void> fetchData()async{
 final url = Uri.parse('https://shop-1-learn-default-rtdb.europe-west1.firebasedatabase.app/products.json');
   try{
     final response = await http.get(url);
+    //print(jsonDecode(response.body));
     final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
     final List<Product> loadedProds = [];
     extractedData.forEach((prodId, prodData){
