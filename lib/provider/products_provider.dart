@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' ;
 import 'product.dart';
 
 class Products with ChangeNotifier {
 
-final List<Product> _items = [
+late List<Product> _items = [
+  /*
   Product(
       id: 'p1',
       title: 'Red Shirt',
@@ -36,6 +39,7 @@ final List<Product> _items = [
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),
+    */
 ];
 
 
@@ -55,9 +59,20 @@ Product findById(String id){
 }
 
 //  function add a new product
-void addProduct(Product product){
+Future<void> addProduct(Product product) async{
+  //1. http request:
+  final url = Uri.parse('https://shop-1-learn-default-rtdb.europe-west1.firebasedatabase.app/products.json');
+  try{
+    final response = await http.post(url, body: jsonEncode({
+    'title': product.title,
+    'description': product.description,
+    'imageUrl': product.imageUrl,
+    'price': product.price,
+    'isFavorite': product.isFavorite, 
+  }) );
+  
   final newProduct = Product(
-    id: DateTime.now().toString(), 
+    id: jsonDecode(response.body)['name'], 
     title: product.title, 
     description: product.description, 
     price: product.price, 
@@ -66,6 +81,10 @@ void addProduct(Product product){
   _items.add(newProduct);
   // _items.insert(0, newProduct)  if we want to put the item at start of the list
   notifyListeners();
+  } catch(error){
+    debugPrint(error.toString());
+    rethrow;
+  }
 }
 
 // function update a product (if editing)
@@ -85,5 +104,34 @@ void addProduct(Product product){
     notifyListeners();
   }
 
+// function for fetching data from server
+Future<void> fetchData()async{
+
+final url = Uri.parse('https://shop-1-learn-default-rtdb.europe-west1.firebasedatabase.app/products.json');
+  try{
+    final response = await http.get(url);
+    final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+    final List<Product> loadedProds = [];
+    extractedData.forEach((prodId, prodData){
+        loadedProds.add( Product(
+          id: prodId,
+          title: prodData['title'],
+          description: prodData['description'],
+          price: prodData['price'],
+          isFavorite: prodData['isFavorite'],
+          imageUrl: prodData['imageUrl'],
+        )
+      
+        );
+    }
+    );
+    _items = loadedProds;
+    notifyListeners();
+  }catch(error){
+    rethrow;
+  }
 
 }
+
+}
+

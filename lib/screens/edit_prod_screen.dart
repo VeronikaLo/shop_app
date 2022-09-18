@@ -30,6 +30,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   );
 
   var _isInit = true;
+  var isLoading = false;
   var _initValues = {
     'title':'',
     'price':'',
@@ -90,13 +91,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 !_imageUrlController.text.endsWith('.jpg'))) {
           return ;
         }
-
-
         setState(() {}); //empty setState, to ensure update of the latest data from TextFormField with user-url
       }
   }
 
-  void _saveForm(){
+
+  Future<void> _saveForm() async{
+
+    setState(() {
+      isLoading = true;
+    });
     final isValid = _formKey.currentState!.validate();
     if(!isValid){
       return;
@@ -105,9 +109,33 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _formKey.currentState!.save();
     if(_editedProd.id != '' ){
       Provider.of<Products>(context, listen: false).updateProduct(_editedProd.id, _editedProd);
-    } else{
-      Provider.of<Products>(context, listen: false).addProduct(_editedProd);
+      setState(() {
+        isLoading = false;
+      });
       Navigator.of(context).pop();
+    } else{
+      try{
+        await Provider.of<Products>(context, listen: false).addProduct(_editedProd);
+      }catch(error){
+        await showDialog(
+          context: context, 
+          builder: (ctx)=>  AlertDialog(
+            title: const Text("An Error occured!"),
+            content: const Text('Something went wrong'),
+            actions: [
+              TextButton(
+                onPressed: (){Navigator.of(context).pop();} , 
+                child: const Text('Ok'))
+            ],
+          ));
+      }
+      finally{
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.of(context).pop();
+      }
+      
     }
       
   }
@@ -123,7 +151,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
             onPressed: _saveForm, 
             icon: const Icon(Icons.save_alt_rounded))
         ], ),
-      body: Padding(
+      body: isLoading? const Center(
+        child: CircularProgressIndicator(),
+      ) : Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
