@@ -134,7 +134,9 @@ final url = Uri.parse('https://shop-1-learn-default-rtdb.europe-west1.firebaseda
   try{
     final response = await http.get(url);
     //print(jsonDecode(response.body));
-    final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+    final extractedData = jsonDecode(response.body) as Map<String, dynamic>?;
+    if(extractedData == null){
+    return;}
     final List<Product> loadedProds = [];
     extractedData.forEach((prodId, prodData){
         loadedProds.add( Product(

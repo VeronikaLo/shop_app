@@ -62,8 +62,9 @@ Future<void> fetchOrderData() async{
   final url = Uri.parse('https://shop-1-learn-default-rtdb.europe-west1.firebasedatabase.app/orders.json');
   final response = await http.get(url);
   final List<OrderItem> loadedOrders = [];
-  final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
-  //if(extractedData == null){return;}
+  final extractedData = jsonDecode(response.body) as Map<String, dynamic>?;
+  if(extractedData == null){
+    return;}
   extractedData.forEach((orderId, orderData) {
     loadedOrders.add(OrderItem(
       id: orderId, 
@@ -78,7 +79,7 @@ Future<void> fetchOrderData() async{
       ));
   });
 
-  _orders = loadedOrders;
+  _orders = loadedOrders.reversed.toList();
   notifyListeners();
 }
 
